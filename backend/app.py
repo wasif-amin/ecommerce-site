@@ -10,6 +10,7 @@ class Product(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(100))
   price = db.Column(db.Float)
+  image_url = db.Column(db.String(200))
   
 
 with app.app_context():
@@ -28,8 +29,7 @@ def test_db():
 def get_products():
    result = db.session.execute(db.select(Product))
    products = result.scalars().all()
-   product_list = [{"name": p.name, "price": p.price} for p in products]
-
+   product_list = [{"name": p.name, "price": p.price, "image_url": p.image_url} for p in products]
    if product_list:
         return jsonify(product_list)
    else:  

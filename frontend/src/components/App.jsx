@@ -19,7 +19,12 @@ function App() {
   return (
     <div>
       {products.map((product, index) => (
-        <Product key={index} name={product.name} price={product.price} />
+        <Product
+          key={index}
+          name={product.name}
+          price={product.price}
+          img={product.image_url}
+        />
       ))}
     </div>
   );
