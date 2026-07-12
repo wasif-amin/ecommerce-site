@@ -2,19 +2,27 @@ import React, { useState, useEffect } from "react";
 import Product from "./product";
 
 function App() {
-  const [product, setProduct] = useState(null);
+  const [products, setProducts] = useState(null);
 
   useEffect(() => {
     fetch("http://127.0.0.1:5000/api/products")
       .then((res) => res.json())
-      .then((data) => setProduct(data))
+      .then((data) => setProducts(data))
       .catch((err) => console.error("Error fetching:", err));
   }, []);
-  if (!product) {
+  console.log();
+
+  if (!products) {
     return <p>Loading product...</p>;
   }
 
-  return <Product name={product.name} price={product.price} />;
+  return (
+    <div>
+      {products.map((product, index) => (
+        <Product key={index} name={product.name} price={product.price} />
+      ))}
+    </div>
+  );
 }
 
 export default App;

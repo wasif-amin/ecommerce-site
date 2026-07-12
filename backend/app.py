@@ -1,7 +1,8 @@
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
-
+from flask_cors import CORS
 app = Flask(__name__)
+CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:21070212w@localhost:5432/ecommercesite'
 db = SQLAlchemy(app)
 
@@ -23,5 +24,15 @@ def test_db():
         return f"Database is working! Found: {product.name} at ${product.price}"
     return "Database connected, but no products found."
 
+@app.route('/api/products')
+def get_products():
+   result = db.session.execute(db.select(Product))
+   products = result.scalars().all()
+   product_list = [{"name": p.name, "price": p.price} for p in products]
+
+   if product_list:
+        return jsonify(product_list)
+   else:  
+    return jsonify({"error": "No product found"}), 404  
 if __name__ == "__main__":
     app.run(debug=True)
