@@ -6,7 +6,7 @@ function Product(props) {
     <div className="Product">
       <h1>{props.name}</h1>
       <img
-        src={`http://127.0.0.1:5000${props.img}`}
+        src={props.img}
         alt={props.name}
         style={{ width: "200px", height: "200px" }}
       />

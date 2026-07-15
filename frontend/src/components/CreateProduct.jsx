@@ -25,7 +25,7 @@ function CreateProduct(props) {
       />
       <input
         type="text"
-        placeholder="choose file for product image"
+        placeholder="paste image url"
         name="image_url"
         value={props.newProduct.image_url}
         onChange={props.onChange}
