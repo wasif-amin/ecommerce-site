@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 app = Flask(__name__)
@@ -33,6 +33,18 @@ def get_products():
    if product_list:
         return jsonify(product_list)
    else:  
-    return jsonify({"error": "No product found"}), 404  
+    return jsonify({"error": "No product found"}), 404
+@app.route('/api/add-product', methods=['POST'])
+def add_product():
+     data = request.json
+     new_product = Product(
+        name=data['name'],
+        price=data['price'],
+        image_url=data['image_url']
+    )
+     db.session.add(new_product)
+     db.session.commit()
+     return jsonify({"message": "Product added successfully!"}), 201 
+
 if __name__ == "__main__":
     app.run(debug=True)
