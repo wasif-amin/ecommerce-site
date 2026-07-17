@@ -7,7 +7,7 @@ function CreateProduct(props) {
     img_url: "",
   });
   return (
-    <form onSubmit={props.onSubmit}>
+    <form onSubmit={props.onSubmit} className="newProduct">
       <h2>new product</h2>
       <input
         type="text"

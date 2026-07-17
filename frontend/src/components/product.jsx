@@ -12,8 +12,10 @@ function Product(props) {
       />
 
       <p>price: ${props.price}</p>
-      <button>add to cart</button>
-      <button>buy now</button>
+      <div className="button-container">
+        <button>add to cart</button>
+        <button>buy now</button>
+      </div>
     </div>
   );
 }

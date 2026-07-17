@@ -7,15 +7,18 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:21070212w@localho
 db = SQLAlchemy(app)
 
 class Product(db.Model):
-  id = db.Column(db.Integer, primary_key=True)
+  id = db.Column(db.Integer, primary_key=True, autoincrement=True)
   name = db.Column(db.String(100))
   price = db.Column(db.Float)
   image_url = db.Column(db.String(200))
-  
-
-with app.app_context():
-  db.create_all()
-  print("database tables were created")
+class Cart(db.Model):
+  id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+  product_id = db.Column(db.Integer, db.ForeignKey(Product.id))
+  quantity = db.Column(db.Integer, default=1)
+  product = db.relationship('Product')
+  with app.app_context():
+    db.create_all()
+    print("database tables were created")
 
 
 @app.route('/test-db')

@@ -4,7 +4,28 @@
   padding: 25px 15px;
   background-color: #81ecec;
   margin: 50px 0;
-  height: 300px;
+  .Product {
+    border-radius: 25px;
+    position: relative;
+    padding: 25px 15px;
+    background-color: #81ecec;
+    margin: 50px 0;
+    min-height: 300px;
+    width: 300px;
+    box-shadow: 0 2px 5px #ccc;
+    text-align: left;
+    border: solid 5px #00cec9;
+    padding-bottom: 20px;
+  }
+  .Product button {
+    height: 35px;
+    width: 80px;
+    border-radius: 14px;
+    border: #00cec9 solid 2px;
+    display: flex;
+
+    align-items: center;
+  }
   width: 300px;
   box-shadow: 0 2px 5px #ccc;
   text-align: left;
@@ -15,4 +36,28 @@
   width: 80px;
   border-radius: 14px;
   border: #00cec9 solid 2px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.button-container {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: flex-start;
+  margin-top: 10px;
+}
+.newProduct {
+  display: flex;
+  border-radius: 25px;
+  position: relative;
+  padding: 25px 15px;
+  background-color: #81ecec;
+  margin: 50px 0;
+  height: 300px;
+  width: 300px;
+  box-shadow: 0 2px 5px #ccc;
+  text-align: left;
+  border: solid 5px #00cec9;
+  flex-direction: column;
 }
