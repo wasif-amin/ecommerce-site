@@ -32,7 +32,7 @@ def test_db():
 def get_products():
    result = db.session.execute(db.select(Product))
    products = result.scalars().all()
-   product_list = [{"name": p.name, "price": p.price, "image_url": p.image_url} for p in products]
+   product_list = [{"id": p.id, "name": p.name, "price": p.price, "image_url": p.image_url} for p in products]
    if product_list:
         return jsonify(product_list)
    else:  
@@ -47,7 +47,18 @@ def add_product():
     )
      db.session.add(new_product)
      db.session.commit()
-     return jsonify({"message": "Product added successfully!"}), 201 
+
+     return jsonify({"message": "Product added successfully!"}), 201
+
+@app.route('/api/add/cart', methods=['POST'])
+def add_to_cart():
+   data = request.json
+   product_id = data.get('product_id')
+   new_cart_item = Cart(product_id=product_id)
+   db.session.add(new_cart_item)
+   db.session.commit()
+   return jsonify({"message": "Product added to cart successfully!"}), 201
+
 
 if __name__ == "__main__":
     app.run(debug=True)

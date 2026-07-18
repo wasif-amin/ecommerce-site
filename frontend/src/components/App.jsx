@@ -18,6 +18,7 @@ function App() {
       };
     });
   }
+
   function handleAdd(event) {
     event.preventDefault();
     fetch("http://127.0.0.1:5000/api/add-product", {
@@ -35,7 +36,23 @@ function App() {
       })
       .catch((err) => console.error("Error:", err));
   }
-   
+
+  async function handleAddToCart(event, productID) {
+    event.preventDefault();
+    try {
+      const response = await fetch("http://127.0.0.1:5000/api/add/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ product_id: productID }),
+      });
+
+      const data = await response.json();
+      console.log("Success:", data);
+    } catch (err) {
+      console.error("Error:", err);
+    }
+  }
+
   useEffect(() => {
     fetch("http://127.0.0.1:5000/api/products")
       .then((res) => res.json())
@@ -61,6 +78,7 @@ function App() {
           name={product.name}
           price={product.price}
           img={product.image_url}
+          onAddToCart={(event) => handleAddToCart(event, product.id)}
         />
       ))}
     </div>
