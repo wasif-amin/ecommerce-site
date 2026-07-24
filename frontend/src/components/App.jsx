@@ -4,6 +4,7 @@ import CreateProduct from "./CreateProduct";
 
 function App() {
   const [products, setProducts] = useState(null);
+  const [cartProducts, setCartProducts] = useState(null);
   const [newProduct, setNewProduct] = useState({
     name: "",
     price: "",
@@ -60,6 +61,19 @@ function App() {
       .catch((err) => console.error("Error fetching:", err));
   }, []);
   console.log();
+  useEffect(() => {
+    fetch("http://127.0.0.1:5000/api/cart-products")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.error) {
+          setCartProducts(data);
+        } else {
+          setCartProducts([]);
+        }
+      })
+      .catch((err) => console.error("Error fetching:", err));
+  }, []);
+  console.log("Current cartProducts state:", cartProducts);
 
   if (!products) {
     return <p>Loading product...</p>;

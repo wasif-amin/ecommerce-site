@@ -37,6 +37,28 @@ def get_products():
         return jsonify(product_list)
    else:  
     return jsonify({"error": "No product found"}), 404
+   
+@app.route('/api/cart-products')
+def get_cart_products():
+    cart_items = Cart.query.all()
+    cart_list = []
+
+    for item in cart_items:
+        print(f"cart item id: {item.id} has product: {item.product}")
+        if item.product:
+            cart_list.append({
+                "id": item.id,
+                "name": item.product.name,
+                "price": item.product.price,
+                "image_url": item.product.image_url,
+                "quantity": item.quantity
+            })
+
+    if cart_list:
+        return jsonify(cart_list)
+    else:
+        return jsonify({"error": "no items found in cart"}), 404
+       
 @app.route('/api/add-product', methods=['POST'])
 def add_product():
      data = request.json
