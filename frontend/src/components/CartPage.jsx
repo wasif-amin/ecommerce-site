@@ -1,5 +1,5 @@
 import { CartProduct } from "./product";
-export default function CartPage({ cartProducts }) {
+export default function CartPage({ cartProducts, total }) {
   return (
     <div>
       <h2>Your Shopping Cart</h2>

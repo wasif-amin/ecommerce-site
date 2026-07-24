@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import Product from "./product";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Product } from "./product";
 import CreateProduct from "./CreateProduct";
-
+import CartPage from "./CartPage";
+import Navbar from "./Navbar";
 function App() {
   const [products, setProducts] = useState(null);
-  const [cartProducts, setCartProducts] = useState(null);
+  const [cartProducts, setCartProducts] = useState([]);
   const [newProduct, setNewProduct] = useState({
     name: "",
     price: "",
@@ -74,28 +76,46 @@ function App() {
       .catch((err) => console.error("Error fetching:", err));
   }, []);
   console.log("Current cartProducts state:", cartProducts);
-
+  const cartTotal = cartProducts.reduce(
+    (sum, item) => sum + item.price * (item.quantity || 1),
+    0
+  );
   if (!products) {
     return <p>Loading product...</p>;
   }
 
   return (
-    <div>
-      <CreateProduct
-        onChange={handleChange}
-        onSubmit={handleAdd}
-        newProduct={newProduct}
-      />
-      {products.map((product, index) => (
-        <Product
-          key={index}
-          name={product.name}
-          price={product.price}
-          img={product.image_url}
-          onAddToCart={(event) => handleAddToCart(event, product.id)}
+    <BrowserRouter>
+      <Navbar />
+
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <div>
+              <CreateProduct
+                onChange={handleChange}
+                onSubmit={handleAdd}
+                newProduct={newProduct}
+              />
+              {products.map((product, index) => (
+                <Product
+                  key={index}
+                  name={product.name}
+                  price={product.price}
+                  img={product.image_url}
+                  onAddToCart={(event) => handleAddToCart(event, product.id)}
+                />
+              ))}
+            </div>
+          }
         />
-      ))}
-    </div>
+        <Route
+          path="/CartPage"
+          element={<CartPage cartProducts={cartProducts} total={cartTotal} />}
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

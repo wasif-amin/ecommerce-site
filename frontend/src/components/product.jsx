@@ -15,5 +15,19 @@ function Product({ name, price, img, onAddToCart }) {
     </div>
   );
 }
-
-export default Product;
+function CartProduct({ item }) {
+  return (
+    <div className="cartProduct">
+      <h1>{item.name}</h1>
+      <img
+        src={item.image_url}
+        alt={item.name}
+        style={{ width: "200px", height: "200px" }}
+      />
+      <p>{item.quantity}</p>
+      <p>{item.price}</p>
+      <button>remove from cart</button>
+    </div>
+  );
+}
+export { Product, CartProduct };
