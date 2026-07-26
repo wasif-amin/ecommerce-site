@@ -83,6 +83,16 @@
   border: #00cec9 solid 5px;
   border-radius: 25px;
 }
+.cartProduct button {
+  height: 60px;
+  width: 90px;
+  border-radius: 14px;
+  border: #00cec9 solid 2px;
+  display: flex;
+  border: #00cec9 solid 5px;
+  border-radius: 25px;
+  align-items: center;
+}
 .navbar {
   display: flex;
   justify-content: space-between;

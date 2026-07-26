@@ -13,9 +13,9 @@ class Product(db.Model):
   image_url = db.Column(db.String(200))
 class Cart(db.Model):
   id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-  product_id = db.Column(db.Integer, db.ForeignKey(Product.id))
+  product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
   quantity = db.Column(db.Integer, default=1)
-  product = db.relationship('Product')
+  product = db.relationship('Product', backref='cart_items')
   with app.app_context():
     db.create_all()
     print("database tables were created")
@@ -81,6 +81,18 @@ def add_to_cart():
    db.session.commit()
    return jsonify({"message": "Product added to cart successfully!"}), 201
 
+@app.route('/api/remove-from-cart/<int:item_id>', methods=['DELETE'])
+def remove_from_cart(item_id):
+    cart_item = db.session.get(Cart, item_id)
+    if cart_item:
+        try:
+            db.session.delete(cart_item)
+            db.session.commit()
+            return jsonify({"success": "Item removed"}), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": "Could not delete item", "details": str(e)}), 500
+    return jsonify({"error": "Item not found"}), 404         
 
 if __name__ == "__main__":
     app.run(debug=True)

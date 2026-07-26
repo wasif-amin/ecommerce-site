@@ -15,7 +15,7 @@ function Product({ name, price, img, onAddToCart }) {
     </div>
   );
 }
-function CartProduct({ item }) {
+function CartProduct({ item, onRemove }) {
   return (
     <div className="cartProduct">
       <h1>{item.name}</h1>
@@ -26,7 +26,7 @@ function CartProduct({ item }) {
       />
       <p>{item.quantity}</p>
       <p>{item.price}</p>
-      <button>remove from cart</button>
+      <button onClick={() => onRemove(item.id)}>remove from cart</button>
     </div>
   );
 }

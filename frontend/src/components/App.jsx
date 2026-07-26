@@ -49,10 +49,36 @@ function App() {
         body: JSON.stringify({ product_id: productID }),
       });
 
-      const data = await response.json();
-      console.log("Success:", data);
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Success:", data);
+
+        const cartResponse = await fetch(
+          "http://127.0.0.1:5000/api/cart-products"
+        );
+        const cartData = await cartResponse.json();
+        setCartProducts(cartData);
+      }
     } catch (err) {
       console.error("Error:", err);
+    }
+  }
+
+  async function handleRemoveFromCart(productId) {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:5000/api/remove-from-cart/${productId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (response.ok) {
+        setCartProducts((prevProducts) =>
+          prevProducts.filter((item) => item.id !== productId)
+        );
+      }
+    } catch (err) {
+      console.error("Error removing item:", err);
     }
   }
 
@@ -112,7 +138,13 @@ function App() {
         />
         <Route
           path="/CartPage"
-          element={<CartPage cartProducts={cartProducts} total={cartTotal} />}
+          element={
+            <CartPage
+              cartProducts={cartProducts}
+              total={cartTotal}
+              onRemove={handleRemoveFromCart}
+            />
+          }
         />
       </Routes>
     </BrowserRouter>
