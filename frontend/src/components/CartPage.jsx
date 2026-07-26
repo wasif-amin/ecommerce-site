@@ -8,7 +8,11 @@ export default function CartPage({ cartProducts, total, onRemove }) {
       ) : (
         <div>
           {cartProducts.map((item, index) => (
-            <CartProduct key={`${item.id}-${index}`} item={item} onRemove={onRemove} />
+            <CartProduct
+              key={`${item.id}-${index}`}
+              item={item}
+              onRemove={onRemove}
+            />
           ))}
           <h3>total: {total.toFixed(2)}</h3>
         </div>
