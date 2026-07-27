@@ -187,6 +187,8 @@ function App() {
               cartProducts={cartProducts}
               total={cartTotal}
               onRemove={handleRemoveFromCart}
+              onIncrease={handleIncrease}
+              onDecrease={handleDecrease}
             />
           }
         />
@@ -196,3 +198,4 @@ function App() {
 }
 
 export default App;
+
