@@ -1,5 +1,11 @@
 import { CartProduct } from "./product";
-export default function CartPage({ cartProducts, total, onRemove }) {
+export default function CartPage({
+  cartProducts,
+  total,
+  onRemove,
+  onIncrease,
+  onDecrease,
+}) {
   return (
     <div>
       <h2>Your Shopping Cart</h2>
