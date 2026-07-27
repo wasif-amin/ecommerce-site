@@ -12,6 +12,8 @@ export default function CartPage({ cartProducts, total, onRemove }) {
               key={`${item.id}-${index}`}
               item={item}
               onRemove={onRemove}
+              onIncrease={onIncrease}
+              onDecrease={onDecrease}
             />
           ))}
           <h3>total: {total.toFixed(2)}</h3>
