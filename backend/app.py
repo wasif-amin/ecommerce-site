@@ -92,7 +92,25 @@ def remove_from_cart(item_id):
         except Exception as e:
             db.session.rollback()
             return jsonify({"error": "Could not delete item", "details": str(e)}), 500
-    return jsonify({"error": "Item not found"}), 404         
+    return jsonify({"error": "Item not found"}), 404
+
+@app.route('/api/update-cart-item/<int:item_id>', methods=['PUT'])
+def update_cart(item_id):
+   data = request.get_json()
+   change = data.get('change', 0)
+    
+   cart_item = db.session.get(Cart, item_id)
+     
+   if cart_item:
+    cart_item.quantity += change
+        
+    if cart_item.quantity <= 0:
+        db.session.delete(cart_item)
+            
+    db.session.commit()  
+    return jsonify({"message": "Cart updated successfully"}), 200
+        
+    return jsonify({"error": "Item not found"}), 404          
 
 if __name__ == "__main__":
     app.run(debug=True)
