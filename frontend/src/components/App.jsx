@@ -81,6 +81,50 @@ function App() {
       console.error("Error removing item:", err);
     }
   }
+  async function handleIncrease(id) {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:5000/api/update-cart-item/${id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ change: 1 }),
+        }
+      );
+      if (response.ok) {
+        setCartProducts((prevCart) =>
+          prevCart.map((item) =>
+            item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+          )
+        );
+      }
+    } catch (err) {
+      console.error("Error increasing quantity:", err);
+    }
+  }
+
+  async function handleDecrease(id) {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:5000/api/update-cart-item/${id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ change: -1 }),
+        }
+      );
+
+      if (response.ok) {
+        setCartProducts((prevCart) =>
+          prevCart.map((item) =>
+            item.id === id ? { ...item, quantity: item.quantity - 1 } : item
+          )
+        );
+      }
+    } catch (err) {
+      console.error("Error decreasing quantity:", err);
+    }
+  }
 
   useEffect(() => {
     fetch("http://127.0.0.1:5000/api/products")
