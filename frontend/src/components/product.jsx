@@ -15,7 +15,7 @@ function Product({ name, price, img, onAddToCart }) {
     </div>
   );
 }
-function CartProduct({ item, onRemove }) {
+function CartProduct({ item, onRemove, onIncrease, onDecrease }) {
   return (
     <div className="cartProduct">
       <h1>{item.name}</h1>
@@ -25,6 +25,8 @@ function CartProduct({ item, onRemove }) {
         style={{ width: "200px", height: "200px" }}
       />
       <p>{item.quantity}</p>
+      <button onClick={() => onIncrease(item.id)}>+</button>
+      <button onClick={() => onDecrease(item.id)}>-</button>
       <p>{item.price}</p>
       <button onClick={() => onRemove(item.id)}>remove from cart</button>
     </div>
