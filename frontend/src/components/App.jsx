@@ -81,6 +81,24 @@ function App() {
       console.error("Error removing item:", err);
     }
   }
+
+  async function handleRemoveFromStore(productId) {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:5000/api/remove-from-store/${productId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (response.ok) {
+        setProducts((prevProducts) =>
+          prevProducts.filter((p) => p.id !== productId)
+        );
+      }
+    } catch (err) {
+      console.error("Error removing item:", err);
+    }
+  }
   async function handleIncrease(id) {
     try {
       const response = await fetch(
@@ -175,6 +193,7 @@ function App() {
                   price={product.price}
                   img={product.image_url}
                   onAddToCart={(event) => handleAddToCart(event, product.id)}
+                  onRemove={() => handleRemoveFromStore(product.id)}
                 />
               ))}
             </div>
@@ -198,4 +217,3 @@ function App() {
 }
 
 export default App;
-

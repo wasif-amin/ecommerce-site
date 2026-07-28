@@ -1,7 +1,7 @@
 import React from "react";
 import "../styles.css";
 
-function Product({ name, price, img, onAddToCart }) {
+function Product({ name, price, img, onAddToCart, onRemove }) {
   return (
     <div className="Product">
       <h1>{name}</h1>
@@ -10,7 +10,7 @@ function Product({ name, price, img, onAddToCart }) {
       <p>price: ${price}</p>
       <div className="button-container">
         <button onClick={onAddToCart}>add to cart</button>
-        <button>Delete from store</button>
+        <button onClick={onRemove}>Delete from store</button>
       </div>
     </div>
   );

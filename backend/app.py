@@ -94,6 +94,21 @@ def remove_from_cart(item_id):
             return jsonify({"error": "Could not delete item", "details": str(e)}), 500
     return jsonify({"error": "Item not found"}), 404
 
+@app.route('/api/remove-from-store/<int:item_id>', methods=['DELETE'])
+def remove_from_store(item_id):
+   product = db.session.get(Product, item_id)
+   if product:
+    try:
+        db.session.delete(product)
+        db.session.commit()
+        return jsonify({"success": "Item removed"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Could not delete item", "details": str(e)}), 500
+   return jsonify({"error": "Item not found"}), 404
+
+      
+
 @app.route('/api/update-cart-item/<int:item_id>', methods=['PUT'])
 def update_cart(item_id):
    data = request.get_json()
