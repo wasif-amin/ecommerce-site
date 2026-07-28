@@ -122,3 +122,10 @@
 .navbar-links a:hover {
   color: #000;
 }
+button:hover {
+  cursor: pointer;
+}
+button:active {
+  box-shadow: 0 0px #0056b3;
+  transform: translateY(6px);
+}
