@@ -10,7 +10,7 @@ function Product({ name, price, img, onAddToCart }) {
       <p>price: ${price}</p>
       <div className="button-container">
         <button onClick={onAddToCart}>add to cart</button>
-        <button>buy now</button>
+        <button>Delete from store</button>
       </div>
     </div>
   );
