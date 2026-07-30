@@ -62,16 +62,18 @@ def get_cart_products():
        
 @app.route('/api/add-product', methods=['POST'])
 def add_product():
-     data = request.json
-     new_product = Product(
+    if not session.get("is_admin"):
+       return jsonify({"error": "Unauthorized"}), 403
+    data = request.json
+    new_product = Product(
         name=data['name'],
         price=data['price'],
         image_url=data['image_url']
     )
-     db.session.add(new_product)
-     db.session.commit()
+    db.session.add(new_product)
+    db.session.commit()
 
-     return jsonify({"message": "Product added successfully!"}), 201
+    return jsonify({"message": "Product added successfully!"}), 201
 
 @app.route('/api/add/cart', methods=['POST'])
 def add_to_cart():
@@ -84,6 +86,8 @@ def add_to_cart():
 
 @app.route('/api/remove-from-cart/<int:item_id>', methods=['DELETE'])
 def remove_from_cart(item_id):
+    if not session.get("is_admin"):
+       return jsonify({"error": "Unauthorized"}), 403
     cart_item = db.session.get(Cart, item_id)
     if cart_item:
         try:
@@ -97,6 +101,8 @@ def remove_from_cart(item_id):
 
 @app.route('/api/remove-from-store/<int:item_id>', methods=['DELETE'])
 def remove_from_store(item_id):
+   if not session.get("is_admin"):
+      return  jsonify({"error": "Unauthorized"}), 403
    product = db.session.get(Product, item_id)
    if product:
     try:
@@ -128,9 +134,14 @@ def update_cart(item_id):
         
     return jsonify({"error": "Item not found"}), 404
 
-app.route("/api/easif-login")          
+app.route("/api/wasif-login")          
 def wasif_login():
    session["is_admin"] = True
    return jsonify({"message": "logged in!"}), 200
+
+app.route("/api/check-auth")
+def check_auth():
+   return jsonify({"isAdmin": session.get("is_admin", False)})
+   
 if __name__ == "__main__":
     app.run(debug=True)
