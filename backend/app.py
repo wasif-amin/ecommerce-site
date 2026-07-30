@@ -86,8 +86,6 @@ def add_to_cart():
 
 @app.route('/api/remove-from-cart/<int:item_id>', methods=['DELETE'])
 def remove_from_cart(item_id):
-    if not session.get("is_admin"):
-       return jsonify({"error": "Unauthorized"}), 403
     cart_item = db.session.get(Cart, item_id)
     if cart_item:
         try:
