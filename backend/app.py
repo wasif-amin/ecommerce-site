@@ -1,10 +1,11 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:21070212w@localhost:5432/ecommercesite'
 db = SQLAlchemy(app)
+app.secret_key = "21070212w"
 
 class Product(db.Model):
   id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -125,7 +126,11 @@ def update_cart(item_id):
     db.session.commit()  
     return jsonify({"message": "Cart updated successfully"}), 200
         
-    return jsonify({"error": "Item not found"}), 404          
+    return jsonify({"error": "Item not found"}), 404
 
+app.route("/api/easif-login")          
+def wasif_login():
+   session["is_admin"] = True
+   return jsonify({"message": "logged in!"}), 200
 if __name__ == "__main__":
     app.run(debug=True)
