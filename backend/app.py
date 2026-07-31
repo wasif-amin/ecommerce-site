@@ -1,9 +1,11 @@
 from flask import Flask, jsonify, request, session
 from flask_sqlalchemy import SQLAlchemy
+from datetime import timedelta
 from flask_cors import CORS
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True, origins=["http://localhost:5173", "http://127.0.0.1:5173"])
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:21070212w@localhost:5432/ecommercesite'
+app.config['SESSION_PERMANENT'] = False
 db = SQLAlchemy(app)
 app.secret_key = "21070212w"
 
@@ -132,14 +134,14 @@ def update_cart(item_id):
         
     return jsonify({"error": "Item not found"}), 404
 
-app.route("/api/wasif-login")          
+@app.route("/api/wasif-login")          
 def wasif_login():
    session["is_admin"] = True
    return jsonify({"message": "logged in!"}), 200
 
-app.route("/api/check-auth")
+@app.route("/api/check-auth")
 def check_auth():
    return jsonify({"isAdmin": session.get("is_admin", False)})
    
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(port=5001, debug=True)

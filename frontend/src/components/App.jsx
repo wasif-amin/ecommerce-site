@@ -25,13 +25,14 @@ function App() {
 
   function handleAdd(event) {
     event.preventDefault();
-    fetch("http://127.0.0.1:5000/api/add-product", {
+    fetch("http://localhost:5001/api/add-product", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newProduct),
+      credentials: "include",
     })
       .then(() => {
-        return fetch("http://127.0.0.1:5000/api/products");
+        return fetch("http://127.0.0.1:5001/api/products");
       })
       .then((res) => res.json())
       .then((data) => {
@@ -44,7 +45,7 @@ function App() {
   async function handleAddToCart(event, productID) {
     event.preventDefault();
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/add/cart", {
+      const response = await fetch("http://127.0.0.1:5001/api/add/cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ product_id: productID }),
@@ -55,7 +56,7 @@ function App() {
         console.log("Success:", data);
 
         const cartResponse = await fetch(
-          "http://127.0.0.1:5000/api/cart-products"
+          "http://127.0.0.1:5001/api/cart-products"
         );
         const cartData = await cartResponse.json();
         setCartProducts(cartData);
@@ -68,7 +69,7 @@ function App() {
   async function handleRemoveFromCart(productId) {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/api/remove-from-cart/${productId}`,
+        `http://127.0.0.1:5001/api/remove-from-cart/${productId}`,
         {
           method: "DELETE",
         }
@@ -86,9 +87,10 @@ function App() {
   async function handleRemoveFromStore(productId) {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/api/remove-from-store/${productId}`,
+        `http://localhost:5001/api/remove-from-store/${productId}`,
         {
           method: "DELETE",
+          credentials: "include",
         }
       );
       if (response.ok) {
@@ -103,7 +105,7 @@ function App() {
   async function handleIncrease(id) {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/api/update-cart-item/${id}`,
+        `http://127.0.0.1:5001/api/update-cart-item/${id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -125,7 +127,7 @@ function App() {
   async function handleDecrease(id) {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/api/update-cart-item/${id}`,
+        `http://127.0.0.1:5001/api/update-cart-item/${id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -146,14 +148,14 @@ function App() {
   }
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/api/products")
+    fetch("http://127.0.0.1:5001/api/products")
       .then((res) => res.json())
       .then((data) => setProducts(data))
       .catch((err) => console.error("Error fetching:", err));
   }, []);
   console.log();
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/api/cart-products")
+    fetch("http://127.0.0.1:5001/api/cart-products")
       .then((res) => res.json())
       .then((data) => {
         if (!data.error) {
@@ -165,7 +167,7 @@ function App() {
       .catch((err) => console.error("Error fetching:", err));
   }, []);
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/api/check-auth", { credentials: "include" })
+    fetch("http://localhost:5001/api/check-auth", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         setIsAdmin(data.isAdmin);
@@ -190,17 +192,20 @@ function App() {
           path="/"
           element={
             <div>
-              <CreateProduct
-                onChange={handleChange}
-                onSubmit={handleAdd}
-                newProduct={newProduct}
-              />
+              {isAdmin && (
+                <CreateProduct
+                  onChange={handleChange}
+                  onSubmit={handleAdd}
+                  newProduct={newProduct}
+                />
+              )}
               {products.map((product, index) => (
                 <Product
                   key={index}
                   name={product.name}
                   price={product.price}
                   img={product.image_url}
+                  isAdmin={isAdmin}
                   onAddToCart={(event) => handleAddToCart(event, product.id)}
                   onRemove={() => handleRemoveFromStore(product.id)}
                 />
