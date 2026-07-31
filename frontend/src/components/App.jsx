@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, data } from "react-router-dom";
 import { Product } from "./product";
 import CreateProduct from "./CreateProduct";
 import CartPage from "./CartPage";
 import Navbar from "./Navbar";
 function App() {
+  const [isAdmin, setIsAdmin] = useState(false);
   const [products, setProducts] = useState(null);
   const [cartProducts, setCartProducts] = useState([]);
   const [newProduct, setNewProduct] = useState({
@@ -163,6 +164,14 @@ function App() {
       })
       .catch((err) => console.error("Error fetching:", err));
   }, []);
+  useEffect(() => {
+    fetch("http://127.0.0.1:5000/api/check-auth", { credentials: "include" })
+      .then((res) => res.json())
+      .then((data) => {
+        setIsAdmin(data.isAdmin);
+      });
+  }, []);
+
   console.log("Current cartProducts state:", cartProducts);
   const cartTotal = cartProducts.reduce(
     (sum, item) => sum + item.price * (item.quantity || 1),
