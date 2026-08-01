@@ -142,6 +142,11 @@ def wasif_login():
 @app.route("/api/check-auth")
 def check_auth():
    return jsonify({"isAdmin": session.get("is_admin", False)})
+
+@app.route("/api/wasif-logout")
+def wasif_logout():
+   session["is_admin"] = False
+   return jsonify({"message": "logged out"}), 200
    
 if __name__ == "__main__":
     app.run(port=5001, debug=True)

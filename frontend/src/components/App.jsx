@@ -174,6 +174,9 @@ function App() {
       });
   }, []);
 
+  
+
+
   console.log("Current cartProducts state:", cartProducts);
   const cartTotal = cartProducts.reduce(
     (sum, item) => sum + item.price * (item.quantity || 1),
