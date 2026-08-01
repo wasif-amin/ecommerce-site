@@ -24,7 +24,7 @@ function CartProduct({ item, onRemove, onIncrease, onDecrease }) {
         alt={item.name}
         style={{ width: "200px", height: "200px" }}
       />
-      <p>{item.quantity}</p>
+      <p>quantity:{item.quantity}</p>
       <button onClick={() => onIncrease(item.id)}>+</button>
       <button onClick={() => onDecrease(item.id)}>-</button>
       <p>{item.price}</p>
