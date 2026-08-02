@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request, session
+from flask_login import login_user
 from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
 from flask_cors import CORS
@@ -134,10 +135,16 @@ def update_cart(item_id):
         
     return jsonify({"error": "Item not found"}), 404
 
-@app.route("/api/wasif-login")          
+@app.route("/api/wasif-login", methods=["POST"])          
 def wasif_login():
-   session["is_admin"] = True
-   return jsonify({"message": "logged in!"}), 200
+    data = request.get_json()
+    password = data.get("password")
+    if password == "21070212w":
+      session["is_admin"] = True
+      return jsonify({"message": "logged in!"}), 200
+    else:
+      return jsonify({"error": "Invalid password"}), 401
+   
 
 @app.route("/api/check-auth")
 def check_auth():

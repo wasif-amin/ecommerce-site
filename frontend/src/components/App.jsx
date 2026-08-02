@@ -167,6 +167,10 @@ function App() {
       })
       .catch((err) => console.error("Error fetching:", err));
   }, []);
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:5001/api/wasif-login")
+  })
   useEffect(() => {
     fetch("http://localhost:5001/api/check-auth", { credentials: "include" })
       .then((res) => res.json())
