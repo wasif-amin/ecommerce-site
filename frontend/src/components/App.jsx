@@ -4,6 +4,7 @@ import { Product } from "./product";
 import CreateProduct from "./CreateProduct";
 import CartPage from "./CartPage";
 import Navbar from "./Navbar";
+import Login from "./Login";
 function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [products, setProducts] = useState(null);
@@ -174,9 +175,6 @@ function App() {
       });
   }, []);
 
-  
-
-
   console.log("Current cartProducts state:", cartProducts);
   const cartTotal = cartProducts.reduce(
     (sum, item) => sum + item.price * (item.quantity || 1),
@@ -216,6 +214,7 @@ function App() {
             </div>
           }
         />
+        <Route path="/Login" element={<Login />} />
         <Route
           path="/CartPage"
           element={
