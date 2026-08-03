@@ -245,11 +245,14 @@ function App() {
           element={
             <div>
               {isAdmin && (
-                <CreateProduct
-                  onChange={handleChange}
-                  onSubmit={handleAdd}
-                  newProduct={newProduct}
-                />
+                <>
+                  <button>logout</button>
+                  <CreateProduct
+                    onChange={handleChange}
+                    onSubmit={handleAdd}
+                    newProduct={newProduct}
+                  />
+                </>
               )}
               {products.map((product, index) => (
                 <Product
