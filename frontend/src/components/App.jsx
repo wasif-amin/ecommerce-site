@@ -198,6 +198,10 @@ function App() {
     }
   }
 
+  async function handleLogout() {
+    setIsAdmin(false);
+  }
+
   useEffect(() => {
     fetch("http://localhost:5001/api/products")
       .then((res) => res.json())
@@ -246,7 +250,7 @@ function App() {
             <div>
               {isAdmin && (
                 <>
-                  <button>logout</button>
+                  <button onClick={handleLogout}>logout</button>
                   <CreateProduct
                     onChange={handleChange}
                     onSubmit={handleAdd}
