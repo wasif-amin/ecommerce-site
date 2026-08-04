@@ -129,3 +129,13 @@ button:active {
   box-shadow: 0 0px #0056b3;
   transform: translateY(6px);
 }
+button {
+  height: 60px;
+  width: 90px;
+  border-radius: 14px;
+  border: #00cec9 solid 2px;
+  display: flex;
+  border: #00cec9 solid 5px;
+  border-radius: 25px;
+  align-items: center;
+}

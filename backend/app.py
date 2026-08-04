@@ -1,10 +1,14 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, session
+from flask_login import login_user
 from flask_sqlalchemy import SQLAlchemy
+from datetime import timedelta
 from flask_cors import CORS
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True, origins=["http://localhost:5173", "http://127.0.0.1:5173"])
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:21070212w@localhost:5432/ecommercesite'
+app.config['SESSION_PERMANENT'] = False
 db = SQLAlchemy(app)
+app.secret_key = "21070212w"
 
 class Product(db.Model):
   id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -61,16 +65,18 @@ def get_cart_products():
        
 @app.route('/api/add-product', methods=['POST'])
 def add_product():
-     data = request.json
-     new_product = Product(
+    if not session.get("is_admin"):
+       return jsonify({"error": "Unauthorized"}), 403
+    data = request.json
+    new_product = Product(
         name=data['name'],
         price=data['price'],
         image_url=data['image_url']
     )
-     db.session.add(new_product)
-     db.session.commit()
+    db.session.add(new_product)
+    db.session.commit()
 
-     return jsonify({"message": "Product added successfully!"}), 201
+    return jsonify({"message": "Product added successfully!"}), 201
 
 @app.route('/api/add/cart', methods=['POST'])
 def add_to_cart():
@@ -96,6 +102,8 @@ def remove_from_cart(item_id):
 
 @app.route('/api/remove-from-store/<int:item_id>', methods=['DELETE'])
 def remove_from_store(item_id):
+   if not session.get("is_admin"):
+      return  jsonify({"error": "Unauthorized"}), 403
    product = db.session.get(Product, item_id)
    if product:
     try:
@@ -125,7 +133,27 @@ def update_cart(item_id):
     db.session.commit()  
     return jsonify({"message": "Cart updated successfully"}), 200
         
-    return jsonify({"error": "Item not found"}), 404          
+    return jsonify({"error": "Item not found"}), 404
 
+@app.route("/api/wasif-login", methods=["POST"])          
+def wasif_login():
+    data = request.get_json()
+    password = data.get("password")
+    if password == "21070212w":
+      session["is_admin"] = True
+      return jsonify({"message": "logged in!"}), 200
+    else:
+      return jsonify({"error": "Invalid password"}), 401
+   
+
+@app.route("/api/check-auth")
+def check_auth():
+   return jsonify({"isAdmin": session.get("is_admin", False)})
+
+@app.route("/api/wasif-logout")
+def wasif_logout():
+   session["is_admin"] = False
+   return jsonify({"message": "logged out"}), 200
+   
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(port=5001, debug=True)
