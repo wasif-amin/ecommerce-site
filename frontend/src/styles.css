@@ -4,6 +4,7 @@
   padding: 25px 15px;
   background-color: #81ecec;
   margin: 50px 0;
+
   .Product {
     border-radius: 25px;
     position: relative;
@@ -138,4 +139,9 @@ button {
   border: #00cec9 solid 5px;
   border-radius: 25px;
   align-items: center;
+}
+.Product img {
+  border: #00cec9 solid 5px;
+
+  border-radius: 25px;
 }
