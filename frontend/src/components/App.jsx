@@ -61,7 +61,7 @@ function App() {
     event.preventDefault();
     const sessionID = getSessionId();
     try {
-      const response = await fetch("http://127.0.0.1:5001/api/add-to-cart", {
+      const response = await fetch("http://localhost:5001/api/add/cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
@@ -74,7 +74,7 @@ function App() {
         console.log("Success:", data);
   
         const cartResponse = await fetch(
-          `http://127.0.0.1:5001/api/cart-products?session_id=${sessionId}`
+          `http://localhost:5001/api/cart-products?session_id=${sessionId}`
         );
         const cartData = await cartResponse.json();
         setCartProducts(cartData);
