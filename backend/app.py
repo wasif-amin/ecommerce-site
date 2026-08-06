@@ -45,11 +45,12 @@ def get_products():
    
 @app.route('/api/cart-products')
 def get_cart_products():
-    cart_items = Cart.query.all()
+    session_id = request.args.get("session_id")
+    if not session_id:
+       return jsonify([])
+    cart_items = Cart.query.filter_by(session_id=session_id).all()
     cart_list = []
-
     for item in cart_items:
-        print(f"cart item id: {item.id} has product: {item.product}")
         if item.product:
             cart_list.append({
                 "id": item.id,
@@ -58,12 +59,8 @@ def get_cart_products():
                 "image_url": item.product.image_url,
                 "quantity": item.quantity
             })
-
-    if cart_list:
-        return jsonify(cart_list)
-    else:
-        return jsonify({"error": "no items found in cart"}), 404
-       
+            
+    return jsonify(cart_list)
 @app.route('/api/add-product', methods=['POST'])
 def add_product():
     if not session.get("is_admin"):
