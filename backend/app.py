@@ -80,11 +80,19 @@ def add_product():
 def add_to_cart():
    data = request.json
    product_id = data.get('product_id')
-   new_cart_item = Cart(product_id=product_id)
-   db.session.add(new_cart_item)
-   db.session.commit()
-   return jsonify({"message": "Product added to cart successfully!"}), 201
+   session_id = data.get('session_id')
+   existing_item = Cart.query.filter_by(session_id=session_id, product_id=product_id).first()
+    
+   if existing_item:
+        existing_item.quantity += 1
+        db.session.commit()
+   else:
+        new_cart_item = Cart(session_id=session_id, product_id=product_id)
+        db.session.add(new_cart_item)
+        db.session.commit()
+        return jsonify({"message": "Product added to cart successfully!"}), 201
 
+    
 @app.route('/api/remove-from-cart/<int:item_id>', methods=['DELETE'])
 def remove_from_cart(item_id):
     cart_item = db.session.get(Cart, item_id)

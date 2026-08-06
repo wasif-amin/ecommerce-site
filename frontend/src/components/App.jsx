@@ -29,6 +29,14 @@ function App() {
       };
     });
   }
+  const getSessionId = () => {
+    let sessionId = localStorage.getItem("cart_session_id");
+    if (!sessionId) {
+      sessionId = crypto.randomUUID();
+      localStorage.setItem("cart_session_id", sessionId);
+    }
+    return sessionId;
+  };
 
   function handleAdd(event) {
     event.preventDefault();
@@ -51,19 +59,22 @@ function App() {
 
   async function handleAddToCart(event, productID) {
     event.preventDefault();
+    const sessionID = getSessionId();
     try {
-      const response = await fetch("http://127.0.0.1:5001/api/add/cart", {
+      const response = await fetch("http://127.0.0.1:5001/api/add-to-cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ product_id: productID }),
+        body: JSON.stringify({ 
+          session_id: sessionId, 
+          product_id: productID 
+        }),
       });
-
       if (response.ok) {
         const data = await response.json();
         console.log("Success:", data);
-
+  
         const cartResponse = await fetch(
-          "http://127.0.0.1:5001/api/cart-products"
+          `http://127.0.0.1:5001/api/cart-products?session_id=${sessionId}`
         );
         const cartData = await cartResponse.json();
         setCartProducts(cartData);
@@ -72,6 +83,7 @@ function App() {
       console.error("Error:", err);
     }
   }
+  
 
   async function handeLogin(password) {
     try {
