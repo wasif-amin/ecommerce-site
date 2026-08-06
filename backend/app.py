@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
 from flask_cors import CORS
 app = Flask(__name__)
-CORS(app, supports_credentials=True, origins=["http://localhost:5173", "http://127.0.0.1:5173"])
+CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:21070212w@localhost:5432/ecommercesite'
 app.config['SESSION_PERMANENT'] = False
 db = SQLAlchemy(app)
