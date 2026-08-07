@@ -25,12 +25,6 @@ class Cart(db.Model):
     print("database tables were created")
 
 
-@app.route('/test-db')
-def test_db():
-    product = Product.query.first()
-    if product:
-        return f"Database is working! Found: {product.name} at ${product.price}"
-    return "Database connected, but no products found."
 
 @app.route('/api/products')
 def get_products():
