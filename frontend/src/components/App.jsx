@@ -52,10 +52,11 @@ function App() {
   async function handleAddToCart(event, productID) {
     event.preventDefault();
     try {
-      const response = await fetch("http://127.0.0.1:5001/api/add/cart", {
+      const response = await fetch("http://localhost:5001/api/add/cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ product_id: productID }),
+        credentials: "include",
       });
 
       if (response.ok) {
@@ -63,7 +64,7 @@ function App() {
         console.log("Success:", data);
 
         const cartResponse = await fetch(
-          "http://127.0.0.1:5001/api/cart-products"
+          "http://localhost:5001/api/cart-products"
         );
         const cartData = await cartResponse.json();
         setCartProducts(cartData);
