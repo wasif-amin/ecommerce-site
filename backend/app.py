@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
 from flask_cors import CORS
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:21070212w@localhost:5432/ecommercesite'
 app.config['SESSION_PERMANENT'] = False
 db = SQLAlchemy(app)
@@ -32,7 +32,11 @@ def test_db():
     if product:
         return f"Database is working! Found: {product.name} at ${product.price}"
     return "Database connected, but no products found."
-
+@app.route('/create-tables')
+def create_tables():
+    with app.app_context():
+        db.create_all()
+    return "Tables created successfully!"
 @app.route('/api/products')
 def get_products():
    result = db.session.execute(db.select(Product))
