@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
 from flask_cors import CORS
 app = Flask(__name__)
-CORS(app, supports_credentials=True, origins=["http://localhost:5173", "http://127.0.0.1:5173"])
+CORS(app, supports_credentials=True)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:21070212w@localhost:5432/ecommercesite'
 app.config['SESSION_PERMANENT'] = False
 db = SQLAlchemy(app)
@@ -17,6 +17,7 @@ class Product(db.Model):
   image_url = db.Column(db.String(200))
 class Cart(db.Model):
   id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+  session_id = db.Column(db.String(100), nullable=False)
   product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
   quantity = db.Column(db.Integer, default=1)
   product = db.relationship('Product', backref='cart_items')
@@ -26,6 +27,11 @@ class Cart(db.Model):
 
 
 
+@app.route('/create-tables')
+def create_tables():
+    with app.app_context():
+        db.create_all()
+    return "Tables created successfully!"
 @app.route('/api/products')
 def get_products():
    result = db.session.execute(db.select(Product))
@@ -38,11 +44,12 @@ def get_products():
    
 @app.route('/api/cart-products')
 def get_cart_products():
-    cart_items = Cart.query.all()
+    session_id = request.args.get("session_id")
+    if not session_id:
+       return jsonify([])
+    cart_items = Cart.query.filter_by(session_id=session_id).all()
     cart_list = []
-
     for item in cart_items:
-        print(f"cart item id: {item.id} has product: {item.product}")
         if item.product:
             cart_list.append({
                 "id": item.id,
@@ -51,12 +58,8 @@ def get_cart_products():
                 "image_url": item.product.image_url,
                 "quantity": item.quantity
             })
-
-    if cart_list:
-        return jsonify(cart_list)
-    else:
-        return jsonify({"error": "no items found in cart"}), 404
-       
+            
+    return jsonify(cart_list)
 @app.route('/api/add-product', methods=['POST'])
 def add_product():
     if not session.get("is_admin"):
@@ -76,11 +79,19 @@ def add_product():
 def add_to_cart():
    data = request.json
    product_id = data.get('product_id')
-   new_cart_item = Cart(product_id=product_id)
-   db.session.add(new_cart_item)
-   db.session.commit()
-   return jsonify({"message": "Product added to cart successfully!"}), 201
+   session_id = data.get('session_id')
+   existing_item = Cart.query.filter_by(session_id=session_id, product_id=product_id).first()
+    
+   if existing_item:
+        existing_item.quantity += 1
+        db.session.commit()
+   else:
+        new_cart_item = Cart(session_id=session_id, product_id=product_id)
+        db.session.add(new_cart_item)
+        db.session.commit()
+        return jsonify({"message": "Product added to cart successfully!"}), 201
 
+    
 @app.route('/api/remove-from-cart/<int:item_id>', methods=['DELETE'])
 def remove_from_cart(item_id):
     cart_item = db.session.get(Cart, item_id)

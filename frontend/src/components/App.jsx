@@ -29,7 +29,14 @@ function App() {
       };
     });
   }
-
+  const getSessionId = () => {
+    let sessionId = localStorage.getItem("cart_session_id");
+    if (!sessionId) {
+      sessionId = crypto.randomUUID();
+      localStorage.setItem("cart_session_id", sessionId);
+    }
+    return sessionId;
+  };
   function handleAdd(event) {
     event.preventDefault();
     fetch("http://localhost:5001/api/add-product", {
@@ -51,19 +58,22 @@ function App() {
 
   async function handleAddToCart(event, productID) {
     event.preventDefault();
+    const sessionId = getSessionId();
     try {
       const response = await fetch("http://localhost:5001/api/add/cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ product_id: productID }),
+        body: JSON.stringify({
+          session_id: sessionId,
+          product_id: productID,
+        }),
       });
-
       if (response.ok) {
         const data = await response.json();
         console.log("Success:", data);
 
         const cartResponse = await fetch(
-          "http://localhost:5001/api/cart-products"
+          `http://localhost:5001/api/cart-products?session_id=${sessionId}`
         );
         const cartData = await cartResponse.json();
         setCartProducts(cartData);
@@ -228,6 +238,16 @@ function App() {
       .then((data) => {
         setIsAdmin(data.isAdmin);
       });
+  }, []);
+  useEffect(() => {
+    const sessionId = getSessionId();
+
+    fetch(`http://127.0.0.1:5001/api/cart-products?session_id=${sessionId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setCartProducts(data);
+      })
+      .catch((err) => console.error("Error loading cart:", err));
   }, []);
 
   console.log("Current cartProducts state:", cartProducts);
