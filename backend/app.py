@@ -2,7 +2,12 @@ from flask import Flask, jsonify, request, session
 from flask_login import login_user
 from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
+from werkzeug.security import generate_password_hash, check_password_hash
+import os
+from dotenv import load_dotenv
 from flask_cors import CORS
+
+load_dotenv()
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:21070212w@localhost:5432/ecommercesite'
