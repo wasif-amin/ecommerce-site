@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 from flask_cors import CORS
 
 load_dotenv()
+admin = os.environ.get("ADMIN_PASSWORD_HASH")
+
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:21070212w@localhost:5432/ecommercesite'
@@ -149,7 +151,7 @@ def update_cart(item_id):
 def wasif_login():
     data = request.get_json()
     password = data.get("password")
-    if password == "21070212w":
+    if check_password_hash(admin, password ):
       session["is_admin"] = True
       return jsonify({"message": "logged in!"}), 200
     else:
