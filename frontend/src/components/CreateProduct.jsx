@@ -24,12 +24,18 @@ function CreateProduct(props) {
         onChange={props.onChange}
       />
       <input
-        type="text"
-        placeholder="paste image url"
-        name="image_url"
-        value={props.newProduct.image_url}
-        onChange={props.onChange}
-      />
+  type="file"
+  name="image"
+  accept="image/*"
+  onChange={(e) =>
+    props.onChange({
+      target: {
+        name: "image",
+        value: e.target.files[0], 
+      },
+    })
+  }
+/>
       <button type="submit">Add Product</button>
     </form>
   );

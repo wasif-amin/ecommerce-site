@@ -3,10 +3,11 @@ from flask_login import login_user
 from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 import os
 from dotenv import load_dotenv
 from flask_cors import CORS
-
+from flask import send_from_directory
 load_dotenv()
 admin = os.environ.get("ADMIN_PASSWORD_HASH")
 
@@ -39,6 +40,15 @@ def create_tables():
     with app.app_context():
         db.create_all()
     return "Tables created successfully!"
+
+UPLOAD_FOLDER = 'uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+@app.route('/uploads/<filename>')
+def serve_image(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
 @app.route('/api/products')
 def get_products():
    result = db.session.execute(db.select(Product))
@@ -70,18 +80,30 @@ def get_cart_products():
 @app.route('/api/add-product', methods=['POST'])
 def add_product():
     if not session.get("is_admin"):
-       return jsonify({"error": "Unauthorized"}), 403
-    data = request.json
+        return jsonify({"error": "Unauthorized"}), 403
+
+    name = request.form.get('name')
+    price = request.form.get('price')
+    
+    file = request.files.get('image')
+    
+    image_url = ""
+    if file and file.filename != '':
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        image_url = f"http://localhost:5001/uploads/{filename}"
+
     new_product = Product(
-        name=data['name'],
-        price=data['price'],
-        image_url=data['image_url']
+        name=name,
+        price=float(price) if price else 0.0,
+        image_url=image_url
     )
+
     db.session.add(new_product)
     db.session.commit()
 
     return jsonify({"message": "Product added successfully!"}), 201
-
 @app.route('/api/add/cart', methods=['POST'])
 def add_to_cart():
    data = request.json

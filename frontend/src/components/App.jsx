@@ -37,21 +37,24 @@ function App() {
     }
     return sessionId;
   };
-  function handleAdd(event) {
+  function handleAddToStore(event) {
     event.preventDefault();
+    const formData = new FormData();
+    formData.append("name", newProduct.name);
+    formData.append("price", newProduct.price);
+    formData.append("image", newProduct.image);
     fetch("http://localhost:5001/api/add-product", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newProduct),
+      body: formData,
       credentials: "include",
     })
       .then(() => {
-        return fetch("http://127.0.0.1:5001/api/products");
+        return fetch("http://localhost:5001/api/products");
       })
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
-        setNewProduct({ name: "", price: "", image_url: "" });
+        setNewProduct({ name: "", price: "", image: null });
       })
       .catch((err) => console.error("Error:", err));
   }
@@ -273,7 +276,7 @@ function App() {
                   <button onClick={handleLogout}>logout</button>
                   <CreateProduct
                     onChange={handleChange}
-                    onSubmit={handleAdd}
+                    onSubmit={handleAddToStore}
                     newProduct={newProduct}
                   />
                 </>
