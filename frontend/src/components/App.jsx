@@ -214,7 +214,34 @@ function App() {
   async function handleLogout() {
     setIsAdmin(false);
   }
+  async function handleCheckout() {
+    try {
+      const response = await fetch(
+        "http://localhost:5001/api/checkout-session",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            items: cartItems,
+            user_id: currentUserId,
+            cart_id: currentCartId,
+          }),
+        }
+      );
 
+      const data = await response.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        console.error("Failed to create checkout session");
+      }
+    } catch (error) {
+      console.error("Error during checkout:", error);
+    }
+  }
   useEffect(() => {
     fetch("http://localhost:5001/api/products")
       .then((res) => res.json())
