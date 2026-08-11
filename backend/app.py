@@ -190,7 +190,7 @@ def wasif_logout():
    session["is_admin"] = False
    return jsonify({"message": "logged out"}), 200
 
-app.route("/api/checkout-session", methods=["POST"])
+@app.route("/api/checkout-session", methods=["POST"])
 def checkout_session():
     try:
         data = request.json

@@ -5,6 +5,7 @@ export default function CartPage({
   onRemove,
   onIncrease,
   onDecrease,
+  onCheckout,
 }) {
   return (
     <div>
@@ -23,6 +24,7 @@ export default function CartPage({
             />
           ))}
           <h3>total: {total.toFixed(2)}</h3>
+          <button onClick={onCheckout}>checkout</button>
         </div>
       )}
     </div>

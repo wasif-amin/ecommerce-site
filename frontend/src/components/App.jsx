@@ -20,6 +20,7 @@ function App() {
     price: "",
     img_url: "",
   });
+
   function handleChange(event) {
     const { name, value } = event.target;
     setNewProduct((prevproduct) => {
@@ -214,8 +215,10 @@ function App() {
   async function handleLogout() {
     setIsAdmin(false);
   }
+
   async function handleCheckout() {
     try {
+      const sessionId = getSessionId();
       const response = await fetch(
         "http://localhost:5001/api/checkout-session",
         {
@@ -224,9 +227,8 @@ function App() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            items: cartItems,
-            user_id: currentUserId,
-            cart_id: currentCartId,
+            items: cartProducts,
+            session_id: sessionId,
           }),
         }
       );
@@ -332,6 +334,7 @@ function App() {
               onRemove={handleRemoveFromCart}
               onIncrease={handleIncrease}
               onDecrease={handleDecrease}
+              onCheckout={handleCheckout}
             />
           }
         />
