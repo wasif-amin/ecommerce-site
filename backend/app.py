@@ -8,6 +8,7 @@ import os
 from dotenv import load_dotenv
 from flask_cors import CORS
 from flask import send_from_directory
+import stripe
 load_dotenv()
 admin = os.environ.get("ADMIN_PASSWORD_HASH")
 
@@ -188,6 +189,39 @@ def check_auth():
 def wasif_logout():
    session["is_admin"] = False
    return jsonify({"message": "logged out"}), 200
-   
+
+@app.route("/api/checkout-session", methods=["POST"])
+def checkout_session():
+    try:
+        stripe.api_key = os.environ.get("STRIPE_SECRET_KEY") 
+        data = request.json
+        cart_items = data.get('items', [])
+        
+        line_items = []
+        for item in cart_items:
+            line_items.append({
+                'price_data': {
+                    'currency': 'usd',
+                    'product_data': {
+                        'name': item['name'],
+                    },
+                    'unit_amount': int(item['price'] * 100), 
+                },
+                'quantity': item['quantity'],
+            })
+
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=line_items,
+            mode='payment',
+            success_url='http://localhost:5173/success?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url='http://localhost:5173/cart',
+        )
+
+        return jsonify({'url': checkout_session.url})
+
+    except Exception as e:
+        print("Stripe Error:", str(e)) 
+        return jsonify(error=str(e)), 500
 if __name__ == "__main__":
     app.run(port=5001, debug=True)
