@@ -16,7 +16,7 @@ CORS(app, supports_credentials=True)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:21070212w@localhost:5432/ecommercesite'
 app.config['SESSION_PERMANENT'] = False
 db = SQLAlchemy(app)
-app.secret_key = "21070212w"
+app.secret_key = os.environ.get("SECRET_KEY")
 
 class Product(db.Model):
   id = db.Column(db.Integer, primary_key=True, autoincrement=True)
