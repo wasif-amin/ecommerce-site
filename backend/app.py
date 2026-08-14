@@ -8,8 +8,10 @@ import os
 from dotenv import load_dotenv
 from flask_cors import CORS
 from flask import send_from_directory
-
+import cloudinary
+import cloudinary.uploader
 import stripe
+
 load_dotenv()
 admin = os.environ.get("ADMIN_PASSWORD_HASH")
 
@@ -43,10 +45,12 @@ def create_tables():
         db.create_all()
     return "Tables created successfully!"
 
-UPLOAD_FOLDER = 'uploads'
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+    secure=True
+)
 @app.route('/uploads/<filename>')
 def serve_image(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
@@ -91,11 +95,8 @@ def add_product():
     
     image_url = ""
     if file and file.filename != '':
-        filename = secure_filename(file.filename)
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(file_path)
-        image_url = f"http://localhost:5001/uploads/{filename}"
-
+        upload_result = cloudinary.uploader.upload(file)
+        image_url = upload_result.get("secure_url")
     new_product = Product(
         name=name,
         price=float(price) if price else 0.0,
