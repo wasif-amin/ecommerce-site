@@ -16,13 +16,13 @@ load_dotenv()
 admin = os.environ.get("ADMIN_PASSWORD_HASH")
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True, origins=["https://ecommerce-site-henna-omega.vercel.app", "http://localhost:3000", "http://localhost:5173"])
-db_url = os.getenv("DATABASE_URL", "postgresql://postgres:21070212w@localhost:5432/ecommercesite")
+CORS(app, supports_credentials=True)
 
-if db_url.startswith("postgres://"):
-    db_url = db_url.replace("postgres://", "postgresql://", 1)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://postgres:21070212w@localhost:5432/ecommercesite')
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "pool_pre_ping": True,
+    "pool_recycle": 300,
+}
 app.config['SESSION_PERMANENT'] = False
 db = SQLAlchemy(app)
 app.secret_key = os.environ.get("SECRET_KEY")
