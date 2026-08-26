@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  data,
-  useNavigate,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Product } from "./product";
 import CreateProduct from "./CreateProduct";
 import CartPage from "./CartPage";
 import Navbar from "./Navbar";
 import Login from "./Login";
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:5001";
+
 function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [products, setProducts] = useState(null);
@@ -30,6 +28,7 @@ function App() {
       };
     });
   }
+
   const getSessionId = () => {
     let sessionId = localStorage.getItem("cart_session_id");
     if (!sessionId) {
@@ -38,19 +37,20 @@ function App() {
     }
     return sessionId;
   };
+
   function handleAddToStore(event) {
     event.preventDefault();
     const formData = new FormData();
     formData.append("name", newProduct.name);
     formData.append("price", newProduct.price);
     formData.append("image", newProduct.image);
-    fetch("http://localhost:5001/api/add-product", {
+    fetch(`${API_BASE_URL}/api/add-product`, {
       method: "POST",
       body: formData,
       credentials: "include",
     })
       .then(() => {
-        return fetch("http://localhost:5001/api/products");
+        return fetch(`${API_BASE_URL}/api/products`);
       })
       .then((res) => res.json())
       .then((data) => {
@@ -64,7 +64,7 @@ function App() {
     event.preventDefault();
     const sessionId = getSessionId();
     try {
-      const response = await fetch("http://localhost:5001/api/add/cart", {
+      const response = await fetch(`${API_BASE_URL}/api/add/cart`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -73,11 +73,8 @@ function App() {
         }),
       });
       if (response.ok) {
-        const data = await response.json();
-        console.log("Success:", data);
-
         const cartResponse = await fetch(
-          `http://localhost:5001/api/cart-products?session_id=${sessionId}`
+          `${API_BASE_URL}/api/cart-products?session_id=${sessionId}`
         );
         const cartData = await cartResponse.json();
         setCartProducts(cartData);
@@ -87,32 +84,10 @@ function App() {
     }
   }
 
-  async function handeLogin(password) {
-    try {
-      const response = await fetch("http://localhost:5001/api/wasif-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
-        credentials: "include",
-      });
-
-      if (response.ok) {
-        setIsAdmin(true);
-        return true;
-      } else {
-        alert("Incorrect password!");
-        return false;
-      }
-    } catch (err) {
-      console.error("Login failed:", err);
-      return false;
-    }
-  }
-
   async function handleRemoveFromCart(productId) {
     try {
       const response = await fetch(
-        `http://localhost:5001/api/remove-from-cart/${productId}`,
+        `${API_BASE_URL}/api/remove-from-cart/${productId}`,
         {
           method: "DELETE",
         }
@@ -130,7 +105,7 @@ function App() {
   async function handleRemoveFromStore(productId) {
     try {
       const response = await fetch(
-        `http://localhost:5001/api/remove-from-store/${productId}`,
+        `${API_BASE_URL}/api/remove-from-store/${productId}`,
         {
           method: "DELETE",
           credentials: "include",
@@ -145,10 +120,11 @@ function App() {
       console.error("Error removing item:", err);
     }
   }
+
   async function handleIncrease(id) {
     try {
       const response = await fetch(
-        `http://localhost:5001/api/update-cart-item/${id}`,
+        `${API_BASE_URL}/api/update-cart-item/${id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -170,7 +146,7 @@ function App() {
   async function handleDecrease(id) {
     try {
       const response = await fetch(
-        `http://localhost:5001/api/update-cart-item/${id}`,
+        `${API_BASE_URL}/api/update-cart-item/${id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -192,7 +168,7 @@ function App() {
 
   async function handleLogin(password) {
     try {
-      const response = await fetch("http://localhost:5001/api/wasif-login", {
+      const response = await fetch(`${API_BASE_URL}/api/wasif-login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password }),
@@ -219,19 +195,16 @@ function App() {
   async function handleCheckout() {
     try {
       const sessionId = getSessionId();
-      const response = await fetch(
-        "http://localhost:5001/api/checkout-session",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            items: cartProducts,
-            session_id: sessionId,
-          }),
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/api/checkout-session`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          items: cartProducts,
+          session_id: sessionId,
+        }),
+      });
 
       const data = await response.json();
 
@@ -244,49 +217,43 @@ function App() {
       console.error("Error during checkout:", error);
     }
   }
+
   useEffect(() => {
-    fetch("http://localhost:5001/api/products")
+    fetch(`${API_BASE_URL}/api/products`)
       .then((res) => res.json())
       .then((data) => setProducts(data))
-      .catch((err) => console.error("Error fetching:", err));
+      .catch((err) => console.error("Error fetching products:", err));
   }, []);
-  console.log();
+
   useEffect(() => {
-    fetch("http://localhost:5001/api/cart-products")
+    fetch(`${API_BASE_URL}/api/check-auth`, { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
-        if (!data.error) {
+        setIsAdmin(data.isAdmin);
+      })
+      .catch((err) => console.error("Error checking auth:", err));
+  }, []);
+
+  useEffect(() => {
+    const sessionId = getSessionId();
+
+    fetch(`${API_BASE_URL}/api/cart-products?session_id=${sessionId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.error && Array.isArray(data)) {
           setCartProducts(data);
         } else {
           setCartProducts([]);
         }
       })
-      .catch((err) => console.error("Error fetching:", err));
-  }, []);
-
-  useEffect(() => {
-    fetch("http://localhost:5001/api/check-auth", { credentials: "include" })
-      .then((res) => res.json())
-      .then((data) => {
-        setIsAdmin(data.isAdmin);
-      });
-  }, []);
-  useEffect(() => {
-    const sessionId = getSessionId();
-
-    fetch(`http://127.0.0.1:5001/api/cart-products?session_id=${sessionId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setCartProducts(data);
-      })
       .catch((err) => console.error("Error loading cart:", err));
   }, []);
 
-  console.log("Current cartProducts state:", cartProducts);
   const cartTotal = cartProducts.reduce(
     (sum, item) => sum + item.price * (item.quantity || 1),
     0
   );
+
   if (!products) {
     return <p>Loading product...</p>;
   }
