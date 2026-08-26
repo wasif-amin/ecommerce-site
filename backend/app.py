@@ -17,7 +17,12 @@ admin = os.environ.get("ADMIN_PASSWORD_HASH")
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:21070212w@localhost:5432/ecommercesite'
+db_url = os.getenv("DATABASE_URL", "postgresql://postgres:21070212w@localhost:5432/ecommercesite")
+
+if db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SESSION_PERMANENT'] = False
 db = SQLAlchemy(app)
 app.secret_key = os.environ.get("SECRET_KEY")
