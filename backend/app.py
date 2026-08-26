@@ -16,7 +16,7 @@ load_dotenv()
 admin = os.environ.get("ADMIN_PASSWORD_HASH")
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True, origins=["https://ecommerce-site-henna-omega.vercel.app", "http://localhost:3000", "http://localhost:5173"])
 db_url = os.getenv("DATABASE_URL", "postgresql://postgres:21070212w@localhost:5432/ecommercesite")
 
 if db_url.startswith("postgres://"):
