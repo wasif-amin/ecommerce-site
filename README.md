@@ -1,4 +1,5 @@
-Project: Niche e-commerce store [demo](https://ecommerce-site-henna-omega.vercel.app/)
+Project: Niche e-commerce store [demo](ecommerce-site-henna-omega.vercel.app
+)
 
 Description: A decoupled e-commerce platform with a Python API backend, React storefront, and persistent cart. Built to handle real payments and real image uploads.
 
