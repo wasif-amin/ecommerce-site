@@ -1,4 +1,4 @@
-Project: Niche e-commerce store: [Demo](https://ecommerce-site-7ct9g33fl-wasif-amins-projects.vercel.app/)
+Project: Niche e-commerce store: [Demo](https://ecommerce-site-git-main-wasif-amins-projects.vercel.app/)
 
 Description: A decoupled e-commerce platform with a Python API backend, React storefront, and persistent cart. Built to handle real payments and real image uploads.
 
