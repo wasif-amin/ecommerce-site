@@ -10,7 +10,9 @@ Features I'm proud of:
 
 Tech Stack
 - Frontend: React, React Router, Axios
-- Backend: Python (Flask / FastAPI), REST API, Session Auth
+- Backend: Python (Flask), REST API, Session Auth
 - Database: PostgreSQL
 - Tools: Git, dotenv
+- Payment Processing: Stripe
+- Media Management / Cloud Storage & CDN: Cloudinary
 
