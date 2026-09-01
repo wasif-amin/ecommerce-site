@@ -1,4 +1,4 @@
-Project: Niche e-commerce store: [Demo](https://ecommerce-site-git-main-wasif-amins-projects.vercel.app/) **PLEASE ALLOW 1-2 MINUTES FOR SERVER TO LOAD**
+Project: Niche e-commerce store: [LiveDemo](https://ecommerce-site-git-main-wasif-amins-projects.vercel.app/) (**PLEASE ALLOW 1-2 MINUTES FOR SERVER TO LOAD**) [Video Demo](https://www.loom.com/share/961357504b694b1db851548e5cd159a7)
 
 Description: A decoupled e-commerce platform with a Python API backend, React storefront, and persistent cart. Built to handle real payments and real image uploads.
 
