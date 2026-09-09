@@ -1,4 +1,13 @@
+
 .idea/
 .env
 uploads/*
 !uploads/.gitkeep
+
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store.coverage
+.coverage
+htmlcov/
