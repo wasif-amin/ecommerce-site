@@ -1,6 +1,6 @@
 Project: Niche e-commerce store: [LiveDemo](https://ecommerce-site-git-main-wasif-amins-projects.vercel.app/) (**PLEASE ALLOW 1-2 MINUTES FOR SERVER TO LOAD**) [Video Demo](https://www.loom.com/share/961357504b694b1db851548e5cd159a7)
 
-Description: A decoupled e-commerce platform with a Python API backend, React storefront, and persistent cart. Built to handle real payments and real image uploads.
+Description: A decoupled e-commerce platform with a Flask backend, React storefront, and persistent cart. Built to handle real payments and real image uploads.
 
 Features I'm proud of:
 - session based carts that persist across reloads and his user specific
